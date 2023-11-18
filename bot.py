@@ -9,9 +9,11 @@ logging.basicConfig(level=logging.INFO)
 bot = Bot(token=token)
 dp = Dispatcher()
 
+
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
     await start_handler_func(message)
+
 
 async def main():
     await dp.start_polling(bot)
