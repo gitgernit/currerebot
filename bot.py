@@ -1,4 +1,5 @@
 import asyncio
+import aiosqlite
 import logging
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters.command import Command
@@ -11,12 +12,27 @@ dp = Dispatcher()
 
 
 @dp.message(Command("start"))
-async def cmd_start(message: types.Message):
+async def cmd_start(message: types.Message, db):
     await start_handler_func(message)
 
 
 async def main():
-    await dp.start_polling(bot)
+    db = await aiosqlite.connect("users.db")
+    await db.execute("CREATE TABLE IF NOT EXISTS users_table (id INT PRIMARY KEY)")
+    await db.commit()
+
+    try:
+        await dp.start_polling(bot, db=db)
+
+    finally:
+        await db.close()
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+
+    except:
+        pass
+
+    finally:
+        print('вiключяюсь')
