@@ -13,12 +13,15 @@ dp = Dispatcher()
 
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message, db):
-    await start_handler_func(message)
+    await start_handler_func(message, db)
 
 
 async def main():
     db = await aiosqlite.connect("users.db")
-    await db.execute("CREATE TABLE IF NOT EXISTS users_table (id INT PRIMARY KEY)")
+    await db.execute("CREATE TABLE IF NOT EXISTS users_table ("
+                     "id INT PRIMARY KEY, "
+                     "type TEXT"
+                     ")")
     await db.commit()
 
     try:
